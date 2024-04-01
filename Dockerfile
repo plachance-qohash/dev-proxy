@@ -1,5 +1,8 @@
 FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
 WORKDIR /app
+    
+RUN apt-get update && apt-get install -y openssl
+RUN apt-get install -y gawk
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
@@ -23,7 +26,7 @@ COPY dev-proxy/recordings.sh ./
 
 RUN chmod +x /app/entrypoint.sh \
     && chmod +x /app/recordings.sh \
-    && mkdir /mocks
+    && mkdir /mocks 
 
 EXPOSE 8000
 CMD ["/app/entrypoint.sh"]
