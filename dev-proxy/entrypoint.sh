@@ -11,6 +11,7 @@ fi
 extractCert() {
     openssl pkcs12 -in "$CERT_FILE" -out "$DIR/rootCert.crt" -nodes -passin pass:
     awk '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/' "$DIR/rootCert.crt" > "$DIR/dev-proxy-ca.crt"
+    chmod 644 "$DIR/dev-proxy-ca.crt"
 }
 
 if [ ! -f "$DIR/dev-proxy-ca.crt" ]; then
