@@ -34,6 +34,8 @@ internal class ProxyHost
     private Option<bool?> _installCertOption;
     internal static readonly string UrlsToWatchOptionName = "--urls-to-watch";
     private static Option<IEnumerable<string>?>? _urlsToWatchOption;
+    internal static readonly string NamedPipeOptionName = "--named-pipe";
+    private Option<string?> _namedPipeOption;
 
     private static bool _configFileResolved = false;
     private static string _configFile = "devproxyrc.json";
@@ -257,6 +259,8 @@ internal class ProxyHost
         };
         _urlsToWatchOption.AddAlias("-u");
 
+        _namedPipeOption = new Option<string?>(NamedPipeOptionName, "Set Named Pipe as STDIN");
+
         ProxyCommandHandler.Configuration.ConfigFile = ConfigFile;
     }
 
@@ -280,7 +284,8 @@ internal class ProxyHost
             _installCertOption,
             // _urlsToWatchOption is set while initialize the Program
             // As such, it's always set here
-            _urlsToWatchOption!
+            _urlsToWatchOption!,
+            _namedPipeOption
         };
         command.Description = "Dev Proxy is a command line tool for testing Microsoft Graph, SharePoint Online and any other HTTP APIs.";
 
@@ -316,6 +321,7 @@ internal class ProxyHost
             _noFirstRunOption,
             _asSystemProxyOption,
             _installCertOption,
+            _namedPipeOption,
         }.Concat(optionsFromPlugins).ToArray(),
         urlsToWatch,
         logger

@@ -159,10 +159,16 @@ public class ProxyEngine
         }
         _pluginEvents.AfterRequestLog += AfterRequestLog;
 
+        if (!string.IsNullOrEmpty(_config.NamedPipe)) 
+        {
+            _logger.LogInformation("Reading commands from named pipe...");
+            await ReadKeysFromNamedPipe();
+        }
         // we need this check or proxy will fail with an exception
         // when run for example in VSCode's integrated terminal
-        if (!Console.IsInputRedirected)
+        else if (!Console.IsInputRedirected)
         {
+            _logger.LogInformation("Reading commands from console...");
             ReadKeys();
         }
         while (_proxyServer.ProxyRunning) { await Task.Delay(10); }
@@ -217,6 +223,48 @@ public class ProxyEngine
         }
 
         _requestLogs.Add(e.RequestLog);
+    }
+
+    private async Task ReadKeysFromNamedPipe()
+    {
+        if (_config.NamedPipe == null) 
+        {
+            return;
+        }
+
+        while (true)
+        {
+            try 
+            {
+                using (var fileStream = new FileStream(_config.NamedPipe, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var reader = new StreamReader(fileStream))
+                {
+                    string? command = await reader.ReadLineAsync();
+                    if (command != null && command.Length > 0)
+                    {
+                        if (command[0] == (char)27) // ESC 
+                        {
+                            break;
+                        }
+                        switch (char.ToLower(command[0]))
+                        {
+                            case 'r':
+                                StartRecording();
+                                break;
+                            case 's':
+                                StopRecording().GetAwaiter().GetResult();
+                                break;                
+                        }
+                    }
+                }
+                Thread.Sleep(300);
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("Error reading from the pipe file: " + ex.Message);
+                break;
+            }
+        }
     }
 
     private void ReadKeys()

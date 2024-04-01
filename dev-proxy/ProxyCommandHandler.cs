@@ -84,6 +84,11 @@ public class ProxyCommandHandler : ICommandHandler
         {
             Configuration.InstallCert = installCert.Value;
         }
+        var namedPipe = context.ParseResult.GetValueForOption<string?>(ProxyHost.NamedPipeOptionName, _options);
+        if (namedPipe is not null)
+        {
+            Configuration.NamedPipe = namedPipe;
+        }
 
         CancellationToken? cancellationToken = (CancellationToken?)context.BindingContext.GetService(typeof(CancellationToken?));
 
