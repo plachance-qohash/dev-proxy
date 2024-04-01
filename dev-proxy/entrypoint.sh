@@ -9,7 +9,7 @@ if [ ! -f "$NAMED_PIPE" ]; then
 fi
 
 extractCert() {
-    if [ -f "$CERT_FILE" ]; then
+    if [ -f "$DIR/dev-proxy-ca.crt" ]; then
         openssl pkcs12 -in "$CERT_FILE" -out "$DIR/rootCert.crt" -nodes -passin pass:
         awk '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/' "$DIR/rootCert.crt" > "$DIR/dev-proxy-ca.crt"
     fi
