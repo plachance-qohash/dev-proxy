@@ -12,6 +12,12 @@
         "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll"
       },
       {
+        "name": "GraphMockResponsePlugin",
+        "enabled": true,
+        "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
+        "configSection": "mocksPlugin"
+      },
+      {
         "name": "GenericRandomErrorPlugin",
         "enabled": false,
         "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
@@ -19,8 +25,7 @@
       }
     ],
     "urlsToWatch": [
-      "https://jsonplaceholder.typicode.com/*",
-      "https://graph.microsoft.com/v1.0/*"
+      "https://jsonplaceholder.typicode.com/*"
     ],
     "genericRandomErrorPlugin": {
       "errorsFile": "devproxy-errors.json"

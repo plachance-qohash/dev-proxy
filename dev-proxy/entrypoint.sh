@@ -18,8 +18,17 @@ if [ ! -f "$DIR/dev-proxy-ca.crt" ]; then
     sleep 5 && extractCert &
 fi
 
-if [ ! -d "$DIR" ] || [ ! -f "$CERT_FILE" ]; then
-    /app/devproxy --install-cert --ip-address "$CONTAINER_IP" --port 8000
+if [ -f "/mocks/mocks.json" ]; then
+    echo "Playback..."
+    MOCKS_PARAM="--mocks-file ../mocks/mocks.json"
 else
-    /app/devproxy --ip-address $CONTAINER_IP --port 8000
+    MOCKS_PARAM="--no-mocks"
+fi
+
+if [ ! -d "$DIR" ] || [ ! -f "$CERT_FILE" ]; then
+    echo "Install cert and start the proxy"
+    /app/devproxy --install-cert --ip-address "$CONTAINER_IP" --port 8000 $MOCKS_PARAM
+else
+    echo "Start the proxy"
+    /app/devproxy --ip-address $CONTAINER_IP --port 8000 $MOCKS_PARAM
 fi

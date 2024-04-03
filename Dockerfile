@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
 WORKDIR /app
-    
+
 RUN apt-get update && apt-get install -y openssl
 RUN apt-get install -y gawk
 

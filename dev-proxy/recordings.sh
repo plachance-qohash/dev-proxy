@@ -14,7 +14,8 @@ stop() {
 
 sync() {
     echo "Sync mocks..."
-    cp /app/mocks*.json /mocks/
+    cp "$(ls -t /app/mocks*.json | head -1)" /mocks/
+    cp /app/response*.bin /mocks/
 }
 
 "$@"
